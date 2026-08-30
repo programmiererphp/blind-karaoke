@@ -1,0 +1,34 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1536" height="1024" viewBox="0 0 1536 1024">
+  <defs>
+    <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%"><feDropShadow dx="0" dy="8" stdDeviation="16" flood-color="#172033" flood-opacity=".10"/></filter>
+    <linearGradient id="pink" x1="0" x2="1"><stop stop-color="#ff2d7a"/><stop offset="1" stop-color="#8b5cf6"/></linearGradient>
+    <style>
+      .bg{fill:#f8fafc}.paper{fill:#fff}.ink{fill:#121a2f}.muted{fill:#687087}.pink{fill:#ff2d7a}.violet{fill:#7c4dff}
+      .line{stroke:#e5e7eb;stroke-width:2}.soft{fill:#f6f4ff}.softpink{fill:#fff1f6}.softblue{fill:#eff6ff}.green{fill:#ecfdf5}
+      .t1{font:700 42px Inter,Arial,sans-serif}.t2{font:700 24px Inter,Arial,sans-serif}.t3{font:700 18px Inter,Arial,sans-serif}.body{font:400 15px Inter,Arial,sans-serif}.small{font:400 12px Inter,Arial,sans-serif}
+      .chip{fill:#fff;stroke:#e4e7ec;stroke-width:1.5}.chipOn{fill:#fff1f6;stroke:#ff2d7a;stroke-width:1.5}.btn{fill:url(#pink)}.btn2{fill:#fff;stroke:#7c4dff;stroke-width:1.5}
+    </style>
+  </defs>
+  <rect class="bg" width="1536" height="1024"/>
+  <text x="48" y="64" class="t1 ink">Blind Karaoke — Karaoke Room &amp; After</text>
+  <text x="48" y="94" class="body muted">Der zweite Hingucker: gemeinsamer Room mit Queue, Duett Roulette und privatem Nachtreffen-Feedback.</text><g filter="url(#shadow)">
+    <rect x="92" y="150" width="660" height="790" rx="26" class="paper"/>
+    <line x1="92" y1="212" x2="752" y2="212" class="line"/>
+    <text x="112" y="188" class="t3 ink">Karaoke Room</text>
+    
+  </g><g filter="url(#shadow)">
+    <rect x="824" y="150" width="620" height="790" rx="26" class="paper"/>
+    <line x1="824" y1="212" x2="1444" y2="212" class="line"/>
+    <text x="844" y="188" class="t3 ink">Nach dem Karaoke</text>
+    
+  </g><rect x="130" y="236" width="584" height="190" rx="20" class="softpink"/><text x="160" y="278" class="small muted">JETZT DRAN</text><text x="160" y="324" class="t2 ink">Shallow</text><text x="160" y="354" class="body muted">Lady Gaga &amp; Bradley Cooper · Duett</text><rect x="160" y="372" width="524" height="52" rx="14" class="btn"/>
+  <text x="422" y="404" text-anchor="middle" style="font:700 15px Inter,Arial;fill:#fff">Karaoke starten</text><text x="130" y="480" class="t3 ink">Nächste Songs</text><rect x="130" y="500" width="584" height="58" rx="12" fill="#fff" stroke="#e7e9ef"/>
+  <circle cx="155" cy="529" r="15" fill="#f4f0ff"/><text x="155" y="534" text-anchor="middle" class="small violet">2</text>
+  <text x="182" y="524" class="t3 ink" style="font-size:14px">Perfect</text><text x="182" y="543" class="small muted">Ed Sheeran</text><rect x="130" y="566" width="584" height="58" rx="12" fill="#fff" stroke="#e7e9ef"/>
+  <circle cx="155" cy="595" r="15" fill="#f4f0ff"/><text x="155" y="600" text-anchor="middle" class="small violet">3</text>
+  <text x="182" y="590" class="t3 ink" style="font-size:14px">Dancing Queen</text><text x="182" y="609" class="small muted">ABBA</text><rect x="130" y="632" width="584" height="58" rx="12" fill="#fff" stroke="#e7e9ef"/>
+  <circle cx="155" cy="661" r="15" fill="#f4f0ff"/><text x="155" y="666" text-anchor="middle" class="small violet">4</text>
+  <text x="182" y="656" class="t3 ink" style="font-size:14px">A Thousand Years</text><text x="182" y="675" class="small muted">Christina Perri</text><rect x="130" y="728" width="584" height="120" rx="18" class="soft"/><text x="158" y="766" class="t3 ink">Duett Roulette</text><text x="158" y="794" class="body muted">Gemeinsame Favoriten zuerst, sonst ein passender Demo-Song.</text><rect x="158" y="810" width="528" height="52" rx="14" class="btn2"/>
+  <text x="422" y="842" text-anchor="middle" style="font:700 15px Inter,Arial;fill:#6d3ff2">Zufälliges Duett finden</text><circle cx="980" cy="302" r="42" fill="#ff2d7a" opacity=".16"/><circle cx="980" cy="294" r="15" fill="#ff2d7a"/><path d="M 954 328 Q 980 300 1006 328Z" fill="#ff2d7a"/><circle cx="1288" cy="302" r="42" fill="#4f7cff" opacity=".16"/><circle cx="1288" cy="294" r="15" fill="#4f7cff"/><path d="M 1262 328 Q 1288 300 1314 328Z" fill="#4f7cff"/><text x="1134" y="398" text-anchor="middle" class="t2 ink">Wieder zusammen singen?</text><text x="1134" y="430" text-anchor="middle" class="body muted">Deine Antwort bleibt privat.</text><rect x="884" y="486" width="500" height="52" rx="14" class="btn"/>
+  <text x="1134" y="518" text-anchor="middle" style="font:700 15px Inter,Arial;fill:#fff">♥ Ja, gerne wieder</text><rect x="884" y="554" width="500" height="52" rx="14" class="btn2"/>
+  <text x="1134" y="586" text-anchor="middle" style="font:700 15px Inter,Arial;fill:#6d3ff2">Diesmal nicht</text><rect x="884" y="660" width="500" height="156" rx="20" class="green"/><text x="1134" y="704" text-anchor="middle" class="t3 ink">Nur bei gegenseitigem Ja</text><text x="1134" y="738" text-anchor="middle" class="body muted">wird daraus eine Karaoke-Freundschaft.</text><text x="1134" y="780" text-anchor="middle" class="t2 pink">Karaoke-Freunde ♥</text></svg>

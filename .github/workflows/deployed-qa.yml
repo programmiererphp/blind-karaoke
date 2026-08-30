@@ -29,7 +29,7 @@ jobs:
       - name: Run deployed smoke and discovery QA
         run: |
           node qa/e2e/deployed-smoke.mjs
-          node qa/e2e/deployed-d1.mjs
+          node qa/e2e/deployed-d1.mjs\n          node qa/e2e/deployed-d1-deep.mjs
       - name: Commit selected deployment screenshots
         if: always()
         run: |

@@ -16,7 +16,9 @@
 | D1 Work Browser Fix 02 | Restore active Friends Room ahead of active match after reload and through Room navigation | **Reported ready for retest — verification pending** |
 | D1 Work Browser Retest 02 | Retest Fix 02 plus independent two-user and responsive regressions | **Attempted — BLOCKED; Cloud Browser recovery loop produced no stable tab or product result** |
 | D1 Work Browser Retest 03 | Retry Fix 02 verification after the Browser infrastructure blocker | **Attempted — BLOCKED; fresh Chrome found and tab created, but deployment navigation triggered recovery and tab loss** |
-| D2 | To be defined only after D1 deployment passes QA | Not planned yet |
+| D2 | Meetup Planner: proposal/counterproposal, confirmed meetup, route, .ics, realtime arrival status | **READY_FOR_IMPLEMENTATION — PRD + Build + Browser QA + mockups committed** |
+| D2 Browser QA | Real deployed Work Browser validation after D2 implementation | Not started |
+| D2 Correction | Created only from actual D2 Browser findings | Not created / not applicable yet |
 
 ## Workflow rule
 Do not start the next delivery immediately after implementation. First test the real public deployment against the acceptance criteria, document actual defects, create a correction-only prompt, retest, then plan the next delivery.

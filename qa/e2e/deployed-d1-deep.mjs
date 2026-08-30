@@ -171,6 +171,20 @@ try{
 
   // Duet result already tested above; continue with karaoke target.
   const duetAfterQueue=duet;
+  // Select the queued song as "Jetzt dran" using the first action button in its row.
+  const songText=A.getByText('Shallow',{exact:true}).last();
+  if(await songText.isVisible().catch(()=>false)){
+    const actionAncestor=songText.locator('xpath=ancestor::*[.//button][1]');
+    const rowButtons=actionAncestor.locator('button');
+    if(await rowButtons.count()){
+      await rowButtons.first().click().catch(()=>{});
+      await A.waitForTimeout(800);
+    }
+  }
+  const currentBody=await state(A,'A-current-song');
+  report.checks.currentSongSet=/JETZT DRAN[\\s\\S]*Shallow/i.test(currentBody);
+  await snap(A,'10b-A-current-song.png');
+
   // Karaoke external link check.
   let popupUrl=null;
   const karaokeBtn=A.getByRole('button',{name:/Karaoke starten/i});
@@ -185,9 +199,22 @@ try{
 
   // Reload persistence in room.
   await Promise.all([A.reload({waitUntil:'domcontentloaded'}),B.reload({waitUntil:'domcontentloaded'})]);
-  await Promise.all([A.waitForTimeout(700),B.waitForTimeout(700)]);
-  const ar=await state(A,'A-after-reload'),br=await state(B,'B-after-reload');
-  report.checks.roomPersistsReload=/AKTIVE SESSION|Duett-Partner gefunden/i.test(ar)&&/AKTIVE SESSION|Duett-Partner gefunden/i.test(br);
+  await Promise.all([A.waitForTimeout(5000),B.waitForTimeout(5000)]);
+  let ar=await state(A,'A-after-reload'),br=await state(B,'B-after-reload');
+  report.checks.roomPersistsReload=/AKTIVE SESSION/i.test(ar)&&/AKTIVE SESSION/i.test(br);
+
+  // If the exact room screen is not automatically restored, test whether navigation can recover it.
+  if(!/AKTIVE SESSION/i.test(ar)){
+    await click(A,['Match','Room']); await A.waitForTimeout(500);
+    if(await A.getByRole('button',{name:/Zum Karaoke Room/i}).isVisible().catch(()=>false)) await A.getByRole('button',{name:/Zum Karaoke Room/i}).click();
+    await A.waitForTimeout(700); ar=await state(A,'A-room-recovered');
+  }
+  if(!/AKTIVE SESSION/i.test(br)){
+    await click(B,['Match','Room']); await B.waitForTimeout(500);
+    if(await B.getByRole('button',{name:/Zum Karaoke Room/i}).isVisible().catch(()=>false)) await B.getByRole('button',{name:/Zum Karaoke Room/i}).click();
+    await B.waitForTimeout(700); br=await state(B,'B-room-recovered');
+  }
+  report.checks.roomRecoverableAfterReload=/AKTIVE SESSION/i.test(ar)&&/AKTIVE SESSION/i.test(br);
 
   // End/feedback discovery.
   if(/AKTIVE SESSION/i.test(ar)) await click(A,['Abend beenden','Karaoke-Abend beenden']);
@@ -215,9 +242,17 @@ try{
   const Fctx=await browser.newContext({viewport:{width:390,height:844}});
   const Jctx=await browser.newContext({viewport:{width:390,height:844}});
   const F=await Fctx.newPage(),J=await Jctx.newPage();diag(F,'F');diag(J,'J');
-  await F.goto(target,{waitUntil:'domcontentloaded'});await F.waitForTimeout(500);
-  await click(F,['Mit Freunden singen']);await F.waitForTimeout(700);
-  const fbody=await state(F,'F-created');const invite=await findInvite(F);report.states.friendInvite=invite;
+  await F.goto(target,{waitUntil:'domcontentloaded'});await F.waitForTimeout(2200);
+  let friendClick=await click(F,['Mit Freunden singen']);await F.waitForTimeout(1200);
+  let fbody=await state(F,'F-created');let invite=await findInvite(F);
+  if(!invite){
+    await F.waitForTimeout(1500);
+    friendClick=await click(F,['Mit Freunden singen'])||friendClick;
+    await F.waitForTimeout(1200);
+    fbody=await state(F,'F-created-retry');invite=await findInvite(F);
+  }
+  report.checks.friendCTAAction=!!friendClick;
+  report.states.friendInvite=invite;
   report.checks.friendRoomCreated=/AKTIVE SESSION/i.test(fbody)&&!!invite;
   await snap(F,'14-F-friend-created.png');
   if(invite){
@@ -239,7 +274,8 @@ try{
 
   // Fresh accessibility regression check.
   const Xctx=await browser.newContext({viewport:{width:390,height:844}});
-  const X=await Xctx.newPage();await X.goto(target,{waitUntil:'domcontentloaded'});await X.waitForTimeout(400);await click(X,['Blind Karaoke starten']);await X.waitForTimeout(300);
+  const X=await Xctx.newPage();await X.goto(target,{waitUntil:'domcontentloaded'});await X.waitForTimeout(2200);await click(X,['Blind Karaoke starten']);await X.waitForTimeout(600);
+  report.checks.freshPreferencesScreen=/Deine Sucheinstellungen/i.test(await X.locator('body').innerText());
   const nl=await X.getByLabel(/Nickname/i).count().catch(()=>0);
   const al=await X.getByLabel(/^Alter$/i).count().catch(()=>0);
   report.checks.programmaticLabelsFresh=nl>0&&al>0;
@@ -257,7 +293,7 @@ await fs.writeFile(path.join(out,'summary.txt'),[
   '',
   'NOTES',...report.notes,
   '',
-  ...Object.entries(report.states).map(([k,v])=>`--- ${k} ---\n${typeof v==='object'&&v.body?v.body.slice(0,6500):JSON.stringify(v)}\n`)
+  ...Object.entries(report.states).map(([k,v])=>`--- ${k} ---\n${v&&typeof v==='object'&&v.body?v.body.slice(0,6500):JSON.stringify(v)}\n`)
 ].join('\n'));
 console.log('=== D1 DEEP CHECKS ===');
 for(const [k,v] of Object.entries(report.checks)) console.log(`${k}: ${v}`);

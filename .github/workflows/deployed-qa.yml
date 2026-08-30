@@ -9,7 +9,7 @@ on:
       - 'qa/e2e/**'
 
 permissions:
-  contents: read
+  contents: write
 
 jobs:
   deployed-qa:
@@ -30,6 +30,23 @@ jobs:
         run: |
           node qa/e2e/deployed-smoke.mjs
           node qa/e2e/deployed-d1.mjs
+      - name: Commit selected deployment screenshots
+        if: always()
+        run: |
+          mkdir -p design/screenshots
+          cp -f qa-artifacts-d1/00-home.png design/screenshots/home-mobile.png 2>/dev/null || true
+          cp -f qa-artifacts-d1/MinaQA-01-filled.png design/screenshots/preferences-mobile.png 2>/dev/null || true
+          cp -f qa-artifacts-d1/08-A-room-nav.png design/screenshots/no-active-room-mobile.png 2>/dev/null || true
+          cp -f qa-artifacts-d1/11-friends-click.png design/screenshots/friends-cta-no-change-mobile.png 2>/dev/null || true
+          cp -f qa-artifacts/06-home-desktop.png design/screenshots/home-desktop.png 2>/dev/null || true
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add design/screenshots/
+          if ! git diff --cached --quiet; then
+            git commit -m "qa: update deployed app screenshots"
+            git push
+          fi
+
       - name: Upload QA evidence
         if: always()
         uses: actions/upload-artifact@v4

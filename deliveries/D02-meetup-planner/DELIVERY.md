@@ -9,7 +9,7 @@ Delivery 1 deployed app.
 D1 has passed the deployed Playwright acceptance suite. The final Work Browser verification sequence later became infrastructure-blocked; the user explicitly requested proceeding with D2. D2 must therefore preserve all D1 behavior and its Browser QA must include central D1 regressions.
 
 ## Status
-**PRD_PREPARED**
+**READY_FOR_IMPLEMENTATION**
 
 ## Scope summary
 New:

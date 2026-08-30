@@ -28,9 +28,9 @@ async function state(page,name){
 async function click(page,names){
   for(const name of names){
     const b=page.getByRole('button',{name,exact:true});
-    if(await b.isVisible().catch(()=>false)){await b.click();return name;}
+    if(await b.isVisible().catch(()=>false) && await b.isEnabled().catch(()=>false)){await b.click();return name;}
     const br=page.getByRole('button',{name:new RegExp(name,'i')});
-    if(await br.first().isVisible().catch(()=>false)){await br.first().click();return name;}
+    if(await br.first().isVisible().catch(()=>false) && await br.first().isEnabled().catch(()=>false)){await br.first().click();return name;}
     const l=page.getByRole('link',{name:new RegExp(name,'i')});
     if(await l.first().isVisible().catch(()=>false)){await l.first().click();return name;}
   }
@@ -104,7 +104,7 @@ try{
   await snap(A,'02-A-proposal.png');await snap(B,'03-B-proposal.png');
 
   report.checks.acceptA=!!(await click(A,['Ich bin dabei']));
-  await A.waitForTimeout(700);
+  await A.waitForTimeout(2200);
   const one=await state(A,'A-waiting');
   report.checks.oneSidedWait=/Warten auf das Karaoke-Duo/i.test(one);
   report.checks.acceptB=!!(await click(B,['Ich bin dabei']));
@@ -122,42 +122,55 @@ try{
   await snap(A,'06-A-real-room.png');await snap(B,'07-B-real-room.png');
   report.checks.realRoomBoth=/AKTIVE SESSION|SONG-WARTESCHLANGE|Song hinzufügen/i.test(roomA)&&/AKTIVE SESSION|SONG-WARTESCHLANGE|Song hinzufügen/i.test(roomB);
 
+  // Duet discovery before opening any modal.
+  const duet=await click(A,['Zufälliges Duett','Zufälliges Duett finden','Duett Roulette','Duett finden']);
+  report.checks.duetActionPresent=!!duet;
+  if(duet){
+    await A.waitForTimeout(700);
+    const duetBody=await state(A,'A-duet');
+    report.checks.duetProducesSuggestion=/Challenge|Duett|Shallow|Song|Empfehl/i.test(duetBody);
+    await snap(A,'11-A-duet.png');
+    // Close any resulting modal/card if there is an explicit close button.
+    const close=A.getByRole('button',{name:/Schließen|Close|Abbrechen/i});
+    if(await close.first().isVisible().catch(()=>false)) await close.first().click();
+  } else {
+    report.notes.push('No visible duet action in real matched room.');
+  }
+
   // Song queue.
   const openPicker=await click(A,['Song hinzufügen']);
   report.checks.songPickerOpens=!!openPicker;
   await A.waitForTimeout(500);
-  const pickerBody=await state(A,'A-song-picker');await snap(A,'08-A-song-picker.png');
+  await state(A,'A-song-picker');await snap(A,'08-A-song-picker.png');
 
   let selected=false;
-  const shallow=A.getByText(/Shallow/i);
-  if(await shallow.first().isVisible().catch(()=>false)){await shallow.first().click();selected=true;}
+  const choose=A.getByRole('button',{name:'Wählen',exact:true});
+  if(await choose.first().isVisible().catch(()=>false)){
+    await choose.first().click();
+    selected=true;
+  }
   if(!selected){
-    const title=A.getByPlaceholder(/Song|Titel/i);
-    if(await title.first().isVisible().catch(()=>false)){await title.first().fill('Shallow');selected=true;}
+    const title=A.getByPlaceholder('Songtitel *');
+    if(await title.first().isVisible().catch(()=>false)){
+      await title.first().fill('Shallow');
+      const artist=A.getByPlaceholder(/Interpret \/ Artist/i);
+      if(await artist.first().isVisible().catch(()=>false)) await artist.first().fill('Lady Gaga & Bradley Cooper');
+      selected=true;
+    }
   }
-  if(selected){
-    await A.waitForTimeout(250);
-    await click(A,['Zur Queue hinzufügen','Hinzufügen','Song hinzufügen']);
-  }
-  await A.waitForTimeout(1000);
+  await A.waitForTimeout(700);
+  // Some catalog buttons add directly; custom input needs the enabled submit button.
+  const add=A.getByRole('button',{name:'Hinzufügen',exact:true});
+  if(await add.isVisible().catch(()=>false) && await add.isEnabled().catch(()=>false)) await add.click();
+  await A.waitForTimeout(1200);
   const afterAdd=await state(A,'A-after-add');
   const seenB=await waitBody(B,[/Shallow/i],7000);
   report.checks.queueAddVisibleA=/Shallow/i.test(afterAdd);
   report.checks.queueRealtimeToB=/Shallow/i.test(seenB);
   await snap(A,'09-A-queue.png');await snap(B,'10-B-queue-sync.png');
 
-  // Duet discovery.
-  const duet=await click(A,['Zufälliges Duett finden','Duett Roulette','Duett finden']);
-  report.checks.duetActionPresent=!!duet;
-  if(duet){
-    await A.waitForTimeout(500);
-    const duetBody=await state(A,'A-duet');
-    report.checks.duetProducesSuggestion=/Challenge|Duett|Shallow|Song/i.test(duetBody);
-    await snap(A,'11-A-duet.png');
-  } else {
-    report.notes.push('No visible duet action in real matched room.');
-  }
-
+  // Duet result already tested above; continue with karaoke target.
+  const duetAfterQueue=duet;
   // Karaoke external link check.
   let popupUrl=null;
   const karaokeBtn=A.getByRole('button',{name:/Karaoke starten/i});

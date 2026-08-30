@@ -68,7 +68,15 @@ async function fillFirst(page, selectors, value) {
     else if (s.kind === 'placeholder') loc = page.getByPlaceholder(s.value, { exact: false });
     else if (s.kind === 'name') loc = page.locator(`[name="${s.value}"]`);
     if (loc && await loc.first().isVisible().catch(()=>false)) {
-      await loc.first().fill(String(value));
+      const el = loc.first();
+      const tag = await el.evaluate(node => node.tagName).catch(()=> '');
+      if (tag === 'SELECT') {
+        await el.selectOption({ value: String(value) }).catch(async () => {
+          await el.selectOption({ label: String(value) });
+        });
+      } else {
+        await el.fill(String(value));
+      }
       return true;
     }
   }

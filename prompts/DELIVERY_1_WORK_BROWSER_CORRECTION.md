@@ -1,68 +1,82 @@
-# Delivery 1 Work Browser Correction — self-invite identity guard
+# Delivery 1 Work Browser Correction 02 — restore the active Friends Room
 
-Apply one small Delivery 1 correction to the existing deployed **Blind Karaoke** app.
+Apply one focused Delivery 1 correction to the existing deployed **Blind Karaoke** app.
 
-Do **not** rebuild the app from scratch. Preserve all currently passing Delivery 1 behavior. Do **not** start or plan Delivery 2.
+Do **not** rebuild the app from scratch. Preserve every passing Delivery 1 behavior. Do **not** start or plan Delivery 2.
 
-Source finding: `WORK-D1-01` in `qa/reports/WORK_BROWSER_D1_QA.md`.
+Source finding: `WORK-D1-R01-01` in `qa/reports/WORK_BROWSER_D1_RETEST_01.md`.
 
-## Observed defect — WORK-D1-01 (MEDIUM)
+The previous finding `WORK-D1-01` is now verified **PASS**. Preserve its same-UID self-invite guard exactly: an existing participant must continue to see `Du bist bereits in diesem Room`, retain their identity, and open the same room idempotently.
 
-A Friends Room creator can open their own invite URL in another tab of the same browser/Firebase anonymous-auth session, enter a different nickname, and submit `Room beitreten`. The app then overwrites the creator identity shown in both tabs instead of treating this as an idempotent self-join. The room remains a one-participant room and queue provenance can show mixed old/new names.
+## Observed defect — WORK-D1-R01-01 (HIGH)
+
+When a user has both an active Blind Match state and an active Friends Room, reloading from the room restores the Blind Match proposal instead of the room. The `Room` tab then reports `Kein aktiver Raum`. The room still exists and can be recovered only through its exact saved invite URL.
 
 ## Exact reproduction
 
-1. Create a user named `MinaSelfJoinQA`.
-2. Choose `Mit Freunden singen` and create a Friends Room.
-3. Add one or more songs so participant attribution is visible.
-4. Copy the generated invite URL.
-5. Open the URL in a second tab of the same browser profile, so it has the same authenticated Firebase UID.
-6. Enter `AlexSelfJoinQA` and click `Room beitreten`.
-7. Observe both tabs.
+1. Use a user with an active Blind Match proposal or one-sided waiting match.
+2. From Home, select `Mit Freunden singen`.
+3. Create a Friends Room.
+4. Add Shallow and set it current.
+5. Add Perfect to the queue.
+6. Confirm the room UI shows its code, participant, current Shallow and queued Perfect.
+7. Reload the page while inside the room.
+8. Select the bottom `Room` tab.
 
-Current result: the participant identity changes from Mina to Alex, the room still waits for a partner, and existing/new queue entries can carry inconsistent names.
+Current deployed result:
+
+- Reload shows the Blind Match proposal/waiting state.
+- `Room` shows `Kein aktiver Raum`.
+- Opening the exact room invite URL still finds the existing participant and recovers the full room, proving the active room data was not deleted.
 
 ## Required correction
 
-Make Friends Room joining idempotent and UID-safe:
+Make active-room restoration server-backed and deterministic:
 
-1. Before rendering or submitting the invite join form, read the authenticated UID and the room's participant IDs.
-2. If that UID is already the room owner or a participant:
-   - do not create another participant;
-   - do not update the user's nickname/profile from the join form;
-   - do not overwrite any room participant display name;
-   - route directly to the existing room, or show a clear `Du bist bereits in diesem Room` state with a button to open it.
-3. Enforce the same check in the Firestore join transaction/service, not only in the UI, so repeated/concurrent submissions stay idempotent.
-4. Keep the normal path unchanged for a genuinely different anonymous-auth UID: it may enter a nickname and join as participant two.
-5. Preserve the D1 maximum of two distinct participant UIDs and reject a third distinct UID without changing existing room state.
-6. Do not change matching, confirmation, queue, current-song, feedback, Karaoke Friends, legal pages or visual design except where strictly necessary for this guard.
+1. Persist or derive the authenticated user's active room membership from Firestore. Do not rely only on transient React state, a tab-local variable, or an invite-route navigation state.
+2. During application bootstrap, resolve states in this order:
+   - an active room in which the current UID is a participant;
+   - otherwise the current confirmed/proposed/waiting match state;
+   - otherwise profile/search/home state.
+3. Make the bottom `Room` navigation use the same server-backed active-room resolver. It must find the active room after a cold reload or a newly opened tab.
+4. Restore the exact room ID, invite code, participant identities, current song and queue.
+5. Preserve the active Blind Match record in the background if appropriate; it may become visible again after the Friends Room is ended. Do not let it override `ROOM_ACTIVE`.
+6. When `Abend beenden` genuinely ends the active room, mark/clear that room state so bootstrap no longer restores it.
+7. Enforce at most one selected active room per UID in D1. If legacy data exposes more than one, choose the newest genuinely active membership deterministically and do not create another room during restore.
+8. Preserve the verified `WORK-D1-01` same-UID invite guard and all passing queue, current-song, external-link, matching, feedback, legal and navigation behavior.
 
 ## Exact expected result
 
-- Reopening one's own invite never changes the existing profile or room participant name.
-- The same UID appears at most once in the room.
-- Existing queue/current-song state and attribution remain unchanged.
-- A second independent UID can still join normally and both users then see the same two-person room.
-- A third distinct UID cannot join a full room.
-- No Firestore permission error or app-origin console error occurs.
+- Reload from an active Friends Room returns directly to that room.
+- `Room` opens the same active room after reload or in another same-auth tab.
+- The room code, participants, Shallow current-song state and Perfect queue remain identical.
+- No saved invite URL is required for recovery.
+- An outstanding Blind Match does not hide the active room.
+- Once the room is ended, it is no longer restored and the appropriate match/feedback/home state may appear.
+- No duplicate room, participant or queue record is created.
+- No relevant Firestore permission or app-origin console error occurs.
 
 ## Regression tests
 
-1. **Same-UID self-invite:** create a room, add a song, open the invite in another same-profile tab, attempt to join with another nickname. Verify no rename, no duplicate participant, no queue attribution change and direct/idempotent room access.
-2. **Independent invitee:** create the room in a normal context and join from a truly independent/private context. Verify two distinct UIDs, two nicknames, same room and realtime participant update.
-3. **Full room:** attempt a join from a third independent UID. Verify a clear full-room state and no mutation.
-4. **Queue regression:** add a song from each valid participant and verify realtime sync without reload.
-5. **Reload regression:** reload both valid participants and verify same room, participants, queue and current song.
-6. **Blind Match regression:** rerun compatible two-user matching, one-sided acceptance and mutual confirmation; ensure this Friends Room guard does not affect it.
-7. **Feedback regression:** verify one-sided privacy and mutual Karaoke-Friend creation still work.
-8. **Console:** no relevant warning/error on the happy paths.
+1. **Conflict state:** create/retain an active Blind Match, then create a Friends Room. Reload from inside the room. Verify direct automatic room restoration.
+2. **Room navigation:** after reload and from a fresh same-auth tab, select `Room`; verify the same room opens without the invite URL.
+3. **State fidelity:** verify identical room ID/code, participant names, current Shallow, queued Perfect and invite URL before and after reload.
+4. **Same-UID guard:** reopen the creator's invite in another same-auth tab. Verify `Du bist bereits in diesem Room`, no nickname write and no duplicate participant.
+5. **Independent invitee:** join from a genuinely independent UID and verify both distinct participants share the same room.
+6. **Realtime queue:** add one song from each valid participant and verify cross-user updates without reload.
+7. **End room:** use `Abend beenden`, reload, and verify the ended room is not restored.
+8. **Blind Match regression:** verify proposal privacy, one-sided waiting, mutual confirmation and matched-room creation still work.
+9. **Feedback regression:** verify one-sided feedback privacy and mutual Karaoke-Friend creation.
+10. **Console:** verify no relevant warning/error on all happy paths.
+11. **Responsive:** verify the corrected restore states at 360, 390, 430 and desktop widths.
 
 ## Definition of Done
 
-- `WORK-D1-01` is no longer reproducible.
-- Same-UID invite handling is idempotent at UI and service/transaction levels.
-- A real second UID still joins successfully; a third cannot.
-- All listed regressions pass on the real deployed app.
-- The complete Work Browser QA is rerun with two independent contexts and 360/390/430 plus desktop viewports.
+- `WORK-D1-R01-01` is no longer reproducible on the real deployment.
+- Active-room lookup is server-backed and shared by bootstrap and `Room` navigation.
+- Room state is restored exactly after cold reload and in a newly opened same-auth tab.
+- An active match cannot override an active room.
+- Ending the room clears restoration correctly.
+- `WORK-D1-01` remains fixed.
+- All listed regressions pass with two genuinely independent user contexts where required.
 - No Delivery 2 feature is added.
-

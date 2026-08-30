@@ -12,3 +12,7 @@
 6. Retest corrections before defining Delivery 2.
 
 Do not pre-write a fictional correction prompt before real browser QA.
+
+
+## Work Mode / Browser QA
+- `WORK_BROWSER_D1_QA_AND_CORRECTION.md` — runs Delivery 1 against the real deployed app using the Work built-in Browser, writes the observed QA result back to GitHub, creates a correction prompt from only real defects, and updates ROADMAP / issue #1. It must not start Delivery 2.

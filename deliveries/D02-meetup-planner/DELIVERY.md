@@ -9,7 +9,7 @@ Delivery 1 deployed app.
 D1 has passed the deployed Playwright acceptance suite. The final Work Browser verification sequence later became infrastructure-blocked; the user explicitly requested proceeding with D2. D2 must therefore preserve all D1 behavior and its Browser QA must include central D1 regressions.
 
 ## Status
-**READY_FOR_IMPLEMENTATION**
+**READY_FOR_IMPLEMENTATION — BROWSER QA ATTEMPTED / NOT ACCEPTED**
 
 ## Scope summary
 New:
@@ -38,6 +38,8 @@ Not in D2:
 - [Build prompt](prompts/BUILD.md)
 - [Work Browser QA prompt](prompts/BROWSER_QA.md)
 - [Mockups](design/mockups/README.md)
+- [Work Browser QA report](qa/REPORT.md)
+- [Correction 01](corrections/CORRECTION_01.md)
 
 ## Implementation
 Not started.
@@ -46,7 +48,7 @@ Not started.
 Use the existing Blind Karaoke deployment pipeline. Record the tested deployed URL after implementation.
 
 ## QA
-Not started.
+Attempted against the real deployment on 2026-08-30. The Work Browser exposed only one shared-auth context, so D2-A1…D2-A11 could not be reached. One real D1 regression was reproduced: an active Friends Room returns to Home after reload and requires manual `Room` navigation. See `qa/REPORT.md`.
 
 ## Acceptance
-Not accepted yet.
+Not accepted. Correction 01 and a complete independent-session D2 retest are required.

@@ -13,8 +13,8 @@
 | D1 Work Browser QA | Built-in Work Browser validation and repository report | **Completed — FAIL; 1 MEDIUM self-invite identity defect; independent/mobile checks blocked** |
 | D1 Work Browser Fix 01 | Make same-UID Friends Room invite handling idempotent and preserve creator identity | **Implemented/deployed — targeted retest PASS** |
 | D1 Work Browser Retest 01 | Retest deployed correction and available D1 regressions | **Completed — FAIL; WORK-D1-01 fixed, new HIGH active-room restore defect WORK-D1-R01-01** |
-| D1 Work Browser Fix 02 | Restore active Friends Room ahead of active match after reload and through Room navigation | **Pending** |
-| D1 Work Browser Retest 02 | Retest Fix 02 plus independent two-user and responsive regressions | **Pending** |
+| D1 Work Browser Fix 02 | Restore active Friends Room ahead of active match after reload and through Room navigation | **Reported ready for retest — verification pending** |
+| D1 Work Browser Retest 02 | Retest Fix 02 plus independent two-user and responsive regressions | **Attempted — BLOCKED; Cloud Browser recovery loop produced no stable tab or product result** |
 | D2 | To be defined only after D1 deployment passes QA | Not planned yet |
 
 ## Workflow rule

@@ -2,7 +2,7 @@
 
 | Delivery | Scope | Status |
 |---|---|---|
-| D1 | Blind matching + mutual confirmation + duo Karaoke Room + Friends Room + Duet Roulette + private feedback | **Deployed — prior Playwright acceptance retained; Work Browser correction required** |
+| D1 | Blind matching + mutual confirmation + duo Karaoke Room + Friends Room + Duet Roulette + private feedback | **Deployed / accepted — latest targeted Work Browser room-restore retest PASS** |
 | D1 QA | Test real deployed app against all D1 criteria and issue correction prompt | **QA run completed; QA Fix 01 prepared** |
 | D1 Fix 01 | Repair matching/no-match state, Friends Room CTA, labels, bottom-nav overlap and desktop width | **Retested — partial only; labels fixed, core flow still blocked** |
 | D1 Retest 01 | Repeat real two-browser deployed QA after Fix 01 | **Completed — failed core acceptance** |
@@ -18,7 +18,10 @@
 | D1 Work Browser Retest 03 | Retry Fix 02 verification after the Browser infrastructure blocker | **Attempted — BLOCKED; fresh Chrome found and tab created, but deployment navigation triggered recovery and tab loss** |
 | D2 | Meetup Planner: proposal/counterproposal, confirmed meetup, route, .ics, realtime arrival status | **READY_FOR_IMPLEMENTATION — PRD + Build + Browser QA + mockups committed** |
 | D2 Browser QA | Real deployed Work Browser validation after D2 implementation | **Attempted — FAIL/incomplete; one shared-auth context blocked D2-A1…A11, one MEDIUM D1 room-restore defect found** |
-| D2 Correction | Created only from actual D2 Browser findings | **Correction 01 prepared for active Friends Room bootstrap restoration only** |
+| D2 Correction | Created only from actual D2 Browser findings | **Correction 01 prepared for active Friends Room bootstrap restoration only; targeted deployment behavior now verified** |
+| D2 Correction 01 Retest | Recheck active-room bootstrap, state fidelity, navigation, self-invite and ended-room exclusion | **Completed — targeted PASS; original finding resolved, no new verified product defect** |
+
+Table ID: `BLIND-KARAOKE-ROADMAP-20260830`
 
 ## Workflow rule
 Do not start the next delivery immediately after implementation. First test the real public deployment against the acceptance criteria, document actual defects, create a correction-only prompt, retest, then plan the next delivery.

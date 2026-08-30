@@ -1,5 +1,9 @@
 # Delivery 2 Meetup Planner — Work Browser QA
 
+## Retest follow-up
+
+Correction 01 passed its focused deployed retest on 2026-08-30. The original active-room bootstrap defect is resolved. Full Delivery 2 acceptance remains blocked by the single shared-auth Browser environment. See [`RETEST_01.md`](RETEST_01.md).
+
 ## Deployment
 
 - URL: https://blind-karaoke-663424522262.us-west1.run.app

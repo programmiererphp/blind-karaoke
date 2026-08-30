@@ -8,7 +8,7 @@ Implement only Delivery 1. Do not add public profiles, swiping, social feed, in-
 `wfwebapp` is an external workflow name only and must never appear in visible UI, branding, page title or product copy.
 
 ## UI
-Use a bright, clear interface based on `design/01-master-flow.webp`: mostly white background, very light gray sections, dark readable typography, pink primary CTA, restrained purple accent, rounded cards, soft shadows, large touch targets. Mobile-first for 360–430 px, with centered responsive desktop layouts.
+Use a bright, clear interface based on `design/01-master-flow.svg`: mostly white background, very light gray sections, dark readable typography, pink primary CTA, restrained purple accent, rounded cards, soft shadows, large touch targets. Mobile-first for 360–430 px, with centered responsive desktop layouts.
 
 Bottom navigation: Start / Match / Room / Freunde.
 

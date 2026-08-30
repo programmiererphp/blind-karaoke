@@ -2,7 +2,7 @@
 
 **Blind Karaoke** is a mobile-first social karaoke webapp that connects two people from the same city for a real karaoke evening.
 
-![Blind Karaoke master flow](design/01-master-flow.webp)
+![Blind Karaoke master flow](design/01-master-flow.svg)
 
 ## Delivery 1
 
@@ -21,14 +21,14 @@ There is deliberately no public profile directory, swipe feed, social feed, in-a
 
 ## Repository map
 
-- `SPEC.md` — current product/spec baseline
-- `ROADMAP.md` — delivery status and future work
-- `docs/PROJECT_PRD.md` — product PRD
-- `docs/DELIVERY_1.md` — exact Delivery 1 scope
-- `docs/ARCHITECTURE.md` — component/data design
-- `prompts/DELIVERY_1_AISTUDIO_BUILD.md` — copy-ready AI Studio Build implementation prompt
-- `design/` — accepted/current light UI references
-- `qa/` — acceptance matrix, test data and browser QA plan
+- [SPEC.md](SPEC.md) — current product/spec baseline
+- [ROADMAP.md](ROADMAP.md) — delivery status and future work
+- [docs/PROJECT_PRD.md](docs/PROJECT_PRD.md) — product PRD
+- [docs/DELIVERY_1.md](docs/DELIVERY_1.md) — exact Delivery 1 scope
+- [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) — component/data design
+- [prompts/DELIVERY_1_AISTUDIO_BUILD.md](prompts/DELIVERY_1_AISTUDIO_BUILD.md) — copy-ready AI Studio Build implementation prompt
+- [design/](design/) — accepted/current light UI references
+- [qa/](qa/) — acceptance matrix, test data and browser QA plan
 
 ## Design direction
 
@@ -37,3 +37,5 @@ Bright, clean, mostly white UI with restrained pink/purple accents, large touch 
 ## Current status
 
 Planning assets for Delivery 1 are complete. Implementation and deployed-app QA are the next steps.
+
+> The files in `design/*.svg` are current concept/mockup graphics. Real screenshots of the deployed app will be stored in `design/screenshots/` after implementation and browser QA.

@@ -32,4 +32,6 @@ Mostly white/very light gray; pink primary CTA; restrained purple secondary acce
 Impressum and Datenschutz pages with configurable placeholders, Firebase data disclosure, contact visibility rules and a user-data deletion action.
 
 ## Design reference
-Primary visual reference: `design/01-master-flow.webp` (original GenID: `39051671-d178-4a15-ab4b-81e526020a03`).
+Primary visual reference: `design/01-master-flow.svg`.
+
+The source concept that established the accepted light design direction had GenID `39051671-d178-4a15-ab4b-81e526020a03`. Repository SVGs are implementation-oriented vector references derived from that accepted direction.

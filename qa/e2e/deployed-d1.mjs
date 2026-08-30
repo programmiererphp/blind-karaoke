@@ -6,7 +6,7 @@ const target=process.env.TARGET_URL||'https://blind-karaoke-663424522262.us-west
 const out='qa-artifacts-d1';
 await fs.mkdir(out,{recursive:true});
 const stamp=Date.now();
-const city=`QA-Goettingen-${stamp}`;
+const city='Göttingen';
 const report={target,city,startedAt:new Date().toISOString(),checks:{},states:{},console:[],networkFailures:[],findings:[]};
 
 function diag(page,label){

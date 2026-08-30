@@ -29,6 +29,7 @@ The exact same-UID invite guard from `WORK-D1-01` was also scheduled for regress
 - `browser.tabs.selected()` twice returned no selected tab.
 - Fresh-tab creation/navigation attempts were rejected with `CDP operation refresh tabs was superseded by browser recovery`.
 - A final fresh-tab attempt after a 15-second stabilization window returned the same recovery error.
+- After several further minutes without browser activity, one last fresh-tab attempt again failed with `CDP operation refresh tabs timed out after 20000ms`.
 - The selected browser never explicitly reported a stable tab or loaded deployment page.
 - No standalone Playwright or unrelated browser mechanism was substituted because Browser was available but invocation-blocked and no fallback was authorized.
 

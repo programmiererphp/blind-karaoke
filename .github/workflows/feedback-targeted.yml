@@ -1,0 +1,37 @@
+name: Feedback Targeted QA
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/feedback-targeted.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  feedback:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    env:
+      TARGET_URL: https://blind-karaoke-663424522262.us-west1.run.app
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Install Playwright
+        run: |
+          npm install --no-save playwright@1.55.0
+          npx playwright install --with-deps chromium
+      - name: Test feedback and Karaoke Friend
+        run: node qa/e2e/feedback-targeted.mjs
+      - name: Upload evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: feedback-targeted-qa
+          path: qa-artifacts-feedback/
+          if-no-files-found: warn
+          retention-days: 14
